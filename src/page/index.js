@@ -3,7 +3,7 @@ import Channel from './../common/channel';
 import { EVENT, RENDER_TIME, ADD_EVENT_HANDLERS, ADD_CHILD_INDEX, REMOVE_CHILD_INDEX, REMOVE_CHILD, REPLACE_AT, REMOVE_EVENT_HANDLERS, RENDER_QUEUE, CONSTRUCTOR, ADD_CHILD, RENDER, SET_ATTRIBUTES, SET_CONTENT, INVOKE } from './../common/constants';
 import ReactMount from 'react/lib/ReactMount';
 
-import inject from './inject';
+import {inject} from 'react/lib/ReactDefaultInjection';
 import NodeIDOps from './NodeIDOperations';
 
 class ReactWorkerDom {

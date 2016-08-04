@@ -10,6 +10,7 @@
 import CallbackQueue from 'react/lib/CallbackQueue';
 import PooledClass from 'react/lib/PooledClass';
 import Transaction from 'react/lib/Transaction';
+import ReactUpdateQueue from 'react/lib/ReactUpdateQueue';
 
 const ON_READY_QUEUEING = {
   initialize: function () {
@@ -36,6 +37,9 @@ const Mixin = {
   destructor: function() {
     CallbackQueue.release(this.reactMountReady);
     this.reactMountReady = null;
+  },
+  getUpdateQueue: function () {
+    return ReactUpdateQueue;
   }
 };
 

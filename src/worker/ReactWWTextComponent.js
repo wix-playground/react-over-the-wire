@@ -1,22 +1,23 @@
 import ReactWWIDOperations from './ReactWWIDOperations';
-import Node from './WorkerDomNodeStub';
+import WorkerDomNodeStub from './WorkerDomNodeStub';
+
+let guid = 0;
 
 export default class ReactWWTextComponent {
     constructor(props) {}
 
     construct(text) {
         this._currentElement = text;
-        this._rootNodeID = null;
+        this._rootNodeID = 't' + guid++;
     }
 
-    mountComponent(rootID, transaction, context) {
-        this._rootNodeID = rootID;
-        const parent = ReactWWIDOperations.getParent(this._rootNodeID);
-        const node = new Node(this._rootNodeID, '#text', {
+    mountComponent(transaction, parent, hostInfo, context) {
+        const parentNode = parent instanceof WorkerDomNodeStub ? parent : ReactWWIDOperations.get(parent._rootNodeID);
+        const node = new WorkerDomNodeStub(this._rootNodeID, '#text', {
             value: this._currentElement
-        }, parent.bridge);
-        parent.addChild(node);
-        ReactWWIDOperations.add(this._rootNodeID, node);
+        }, parentNode.bridge);
+        parentNode.addChild(node);
+        ReactWWIDOperations.add(this._rootNodeID, node, parentNode.reactId);
         return node;
     }
 

@@ -3,7 +3,11 @@ import ReactMultiChild from 'react/lib/ReactMultiChild';
 import WorkerDomNodeStub from './WorkerDomNodeStub';
 import ReactWWIDOperations from './ReactWWIDOperations';
 
-import ReactBrowserEventEmitter from 'react/lib/ReactBrowserEventEmitter';
+import EventConstants from 'react/lib/EventConstants';
+
+let guid = 1;
+
+//mountComponent(transaction, parent, hostInfo, context) {}
 
 
 /**
@@ -17,7 +21,7 @@ function extractEventHandlers(props) {
         options: {}
     };
     for (let key in props) {
-        if (ReactBrowserEventEmitter.registrationNameModules.hasOwnProperty(key)) {
+        if (EventConstants.hasOwnProperty(key)) {
             result.eventHandlers[key] = props[key];
         } else {
             result.options[key] = props[key];
@@ -33,19 +37,16 @@ function extractEventHandlers(props) {
  * @extends ReactMultiChild
  */
 export default class ReactWWComponent {
-    constructor(tag) {
-        this._tag = tag.toLowerCase();
+    constructor(element) {
+        this._tag = element.type.toLowerCase();
+        this._currentElement = element;
         this._renderedChildren = null;
         this._previousStyle = null;
         this._previousStyleCopy = null;
-        this._rootNodeID = null;
         this._wrapperState = null;
         this._topLevelWrapper = null;
         this._nodeWithLegacyProperties = null;
-    }
-
-    construct(element) {
-        this._currentElement = element;
+        this._rootNodeID = null;
     }
 
     /**
@@ -56,12 +57,11 @@ export default class ReactWWComponent {
      * @param  {ReactReconcileTransaction} transaction
      * @param  {object} context
      */
-    mountComponent(rootID, transaction, context) {
-        this._rootNodeID = rootID;
+    mountComponent(transaction, parent, hostInfo, context) {
+        this._rootNodeID = 'c' + guid++;
 
-        const node = this.mountNode(ReactWWIDOperations.getParent(rootID), this._currentElement, transaction);
+        const node = this.mountNode(transaction, parent, this._currentElement);
 
-        ReactWWIDOperations.add(rootID, node);
 
         // Mounting children
         let childrenToUse = this._currentElement.props.children;
@@ -72,7 +72,7 @@ export default class ReactWWComponent {
         }
 
         // Rendering the rootNode
-        ReactWWIDOperations.getRoot(rootID).render();
+        ReactWWIDOperations.getRoot(this._rootNodeID).render();
         return this;
     }
 
@@ -83,7 +83,7 @@ export default class ReactWWComponent {
      * @param   {ReactElement}  element - The element to mount.
      * @return  {Node}                  - The mounted node.
      */
-    mountNode(parent, element, transaction) {
+    mountNode(transaction, parent, element) {
         const {
             props, type
         } = element, {
@@ -93,8 +93,11 @@ export default class ReactWWComponent {
         let {
             eventHandlers, options
         } = extractEventHandlers(restProps);
-        const node = new WorkerDomNodeStub(this._rootNodeID, type, options, parent.bridge);
-        parent.addChild(node);
+        const parentNode = parent instanceof WorkerDomNodeStub ? parent : ReactWWIDOperations.get(parent._rootNodeID);
+
+        const node = new WorkerDomNodeStub(this._rootNodeID, type, options, parentNode.bridge );
+        ReactWWIDOperations.add(this._rootNodeID, node, parentNode.reactId);
+        parentNode.addChild(node);
 
         transaction.getReactMountReady().enqueue(function(){
             this.node.addEventHandlers(this.eventHandlers);
