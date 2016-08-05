@@ -5,27 +5,22 @@ function invariant(condition, msg, ...args) {
 }
 
 class NodeList {
-    constructor(tag = '') {
-        this.tag = tag;
+    constructor() {
         this.nodeList = {};
     }
     exists(id) {
         return typeof this.nodeList[id] !== 'undefined';
     }
     add(node) {
-        invariant(!this.exists(node.guid), 'Node already exists', node.guid, node, this.nodeList[node.guid]);
-        this.nodeList[node.guid] = node;
+        invariant(!this.exists(node.reactId), 'Node already exists', node.reactId, this.nodeList[node.reactId]);
+        this.nodeList[node.reactId] = node;
     }
     get(id) {
         invariant(this.exists(id), 'Id does not exist to get', id);
         return this.nodeList[id];
     }
     getByReactId(reactId) {
-        for (let id in this.nodeList) {
-            if (this.nodeList[id].reactId === reactId) {
-                return this.nodeList[id];
-            }
-        }
+        this.get(reactId);
     }
     remove(id) {
         invariant(this.exists(id), 'Id does not exist to remove', id);

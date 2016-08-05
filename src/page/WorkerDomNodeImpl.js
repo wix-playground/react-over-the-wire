@@ -2,9 +2,8 @@ import ReactBrowserEventEmitter from 'react/lib/ReactBrowserEventEmitter';
 import EventConstants from 'react/lib/EventConstants';
 
 export default class WorkerDomNodeImpl {
-    constructor(guid, reactId, el, options) {
+    constructor(reactId, el, options) {
         this.el = el;
-        this.guid = guid;
         this.options = options;
         this.reactId = reactId;
         if (el === '#text') {
@@ -13,7 +12,6 @@ export default class WorkerDomNodeImpl {
         } else {
             this.ref = document.createElement(el);
             this.ref.setAttribute('data-reactid', this.reactId);
-            this.ref.setAttribute('data-reactwwid', this.guid);
             this.setAttributes(this.options);
         }
     }
@@ -33,12 +31,12 @@ export default class WorkerDomNodeImpl {
     }
     removeChildAtIndex(index) {
         var nodeToRemove = this.ref.childNodes[index];
-        let guid = null;
+        let reactId = null;
         if (nodeToRemove.nodeType !== Node.TEXT_NODE){
-            guid = nodeToRemove.getAttribute('data-reactwwid');
+            reactId = nodeToRemove.getAttribute('data-reactid');
         }
         this.ref.removeChild(nodeToRemove);
-        return guid;
+        return reactId;
     }
     replace(oldNode) {
         oldNode.ref.parentNode.replaceChild(this.ref, oldNode.ref);

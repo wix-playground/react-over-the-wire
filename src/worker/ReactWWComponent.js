@@ -169,6 +169,10 @@ export default class ReactWWComponent {
     getPublicInstance() {
         return ReactWWIDOperations.get(this._rootNodeID);
     }
+
+    getHostNode() {
+        return ReactWWIDOperations.get(this._rootNodeID);
+    }
 }
 
 /**

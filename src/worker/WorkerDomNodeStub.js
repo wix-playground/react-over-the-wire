@@ -1,8 +1,6 @@
 import Bridge from './WorkerBridge';
 import {CONSTRUCTOR, ADD_CHILD, ADD_CHILD_INDEX, REMOVE_CHILD, REMOVE_CHILD_INDEX, REPLACE_AT ,SET_CONTENT, REMOVE_EVENT_HANDLERS, SET_ATTRIBUTES, ADD_EVENT_HANDLERS, RENDER, INVOKE} from './../common/constants';
 
-var guid = 0;
-
 export default class WorkerDomNodeStub {
     constructor(reactId, el, options, bridge) {
         this.el = el;
@@ -10,17 +8,16 @@ export default class WorkerDomNodeStub {
         this.bridge = bridge;
         this.eventHandlers = {};
         this.reactId = reactId;
-        this.guid = guid++;
         this.impl(CONSTRUCTOR, [this.el, this.options]);
     }
     addChild(node) {
-        this.impl(ADD_CHILD, [node.guid]);
+        this.impl(ADD_CHILD, [node.reactId]);
     }
     addChildAtIndex(node, index) {
-        this.impl(ADD_CHILD_INDEX, [node.guid, index]);
+        this.impl(ADD_CHILD_INDEX, [node.reactId, index]);
     }
     removeChild(node) {
-        this.impl(REMOVE_CHILD, [node.guid]);
+        this.impl(REMOVE_CHILD, [node.reactId]);
     }
     removeChildFromIndex(index){
         this.impl(REMOVE_CHILD_INDEX, index);
@@ -63,8 +60,7 @@ export default class WorkerDomNodeStub {
         this.bridge.postMessage({
             method,
             args,
-            reactId: this.reactId,
-            guid: this.guid
+            reactId: this.reactId
         });
     }
 }

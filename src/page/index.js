@@ -39,17 +39,17 @@ class ReactWorkerDom {
     handleRenderQueueMessage(data) {
         var node;
         if (data.method !== CONSTRUCTOR) {
-            node = NodeIDOps.get(data.guid);
+            node = NodeIDOps.get(data.reactId);
             //console.log('%s(%s:%s).%s', node.el, node.guid, node.reactId, data.method, ...data.args);
         }
         switch (data.method) {
             case CONSTRUCTOR:
-                node = new WorkerDomNodeImpl(data.guid, data.reactId, ...data.args);
+                node = new WorkerDomNodeImpl(data.reactId, ...data.args);
                 NodeIDOps.add(node);
                 break;
             case RENDER: // Should only be called once per worker
                 this.container.appendChild(node.ref);
-                ReactMount.registerContainer(node.ref);
+                // ReactMount.registerContainer(node.ref);
                 break;
             case ADD_CHILD:
                 node.addChild(NodeIDOps.get(data.args[0]));
@@ -62,12 +62,12 @@ class ReactWorkerDom {
                 break;
             case REMOVE_CHILD_INDEX:
                 var removedNodeGuid = node.removeChildAtIndex(data.args);
-                removedNodeGuid && NodeIDOps.remove(removedNodeGuid);
+                NodeIDOps.remove(removedNodeGuid);
                 break;
             case REPLACE_AT:
-                let oldNode = NodeIDOps.getByReactId(data.args[0]);
+                let oldNode = NodeIDOps.get(data.args[0]);
                 node.replace(oldNode);
-                NodeIDOps.remove(oldNode.guid);
+                NodeIDOps.remove(oldNode.reactId);
                 break;
             case SET_ATTRIBUTES:
                 node.setAttributes(...data.args);
@@ -82,7 +82,7 @@ class ReactWorkerDom {
                 node.removeEventHandlers();
                 break;
             case INVOKE:
-                var el = NodeIDOps.getByReactId(data.reactId).ref;
+                var el = NodeIDOps.get(data.reactId).ref;
                 console.log(INVOKE, data.args, el);
                 if (this.nativeHandlers.hasOwnProperty(data.args[0])) {
                     this.nativeHandlers[data.args[0]].apply(null, [el].concat(data.args.slice(1)));

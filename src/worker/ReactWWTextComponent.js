@@ -4,14 +4,13 @@ import WorkerDomNodeStub from './WorkerDomNodeStub';
 let guid = 0;
 
 export default class ReactWWTextComponent {
-    constructor(props) {}
+    constructor(props) {
+        this._rootNodeID = null;
+        this._currentElement = props;
 
-    construct(text) {
-        this._currentElement = text;
-        this._rootNodeID = 't' + guid++;
     }
-
     mountComponent(transaction, parent, hostInfo, context) {
+        this._rootNodeID = 't' + guid++;
         const parentNode = parent instanceof WorkerDomNodeStub ? parent : ReactWWIDOperations.get(parent._rootNodeID);
         const node = new WorkerDomNodeStub(this._rootNodeID, '#text', {
             value: this._currentElement
@@ -31,10 +30,15 @@ export default class ReactWWTextComponent {
     }
 
     unmountComponent() {
+        this._rootNodeID = null;
         // Nothing really to do, since this just sets the content
     }
 
     getPublicInstance() {
         return this._currentElement;
+    }
+
+    getHostNode() {
+        return ReactWWIDOperations.get(this._rootNodeID);
     }
 }
