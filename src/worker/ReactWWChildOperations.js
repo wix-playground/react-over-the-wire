@@ -8,8 +8,8 @@ ReactMultiChildUpdateTypes;
 
 export const actions = {
     [INSERT_MARKUP](inst, update) {
-        const parent = ReactWWIDOperations.getParent(inst._rootNodeID);
-        const child = inst;
+        const parent = ReactWWIDOperations.get(inst._rootNodeID);
+        const child = update.content;
 
         if (typeof child === 'string' || typeof child === 'number') {
             parent.setContent(child);
@@ -27,10 +27,8 @@ export const actions = {
     }, [TEXT_CONTENT]() {
         console.log(TEXT_CONTENT);
     }, [REMOVE_NODE](inst, update) {
-        // FIXME - Since this is async, if more than one node from the same parent 
-        // Node is to be removed, this causes an error
         const parent = ReactWWIDOperations.get(inst._rootNodeID);
-        parent.removeChildFromIndex(update.fromIndex);
+        parent.removeChildByReactId(update.fromNode.reactId);
     }
 };
 

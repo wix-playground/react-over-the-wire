@@ -67,7 +67,9 @@ const eventsHandlers = {
   onTransitionEnd: true,
   onVolumeChange: true,
   onWaiting: true,
-  onWheel: true
+  onWheel: true,
+  onSubmit: true,
+  onReset: true
 }
 
 let guid = 1;

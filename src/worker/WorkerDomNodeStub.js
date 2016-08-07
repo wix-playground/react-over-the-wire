@@ -22,6 +22,9 @@ export default class WorkerDomNodeStub {
     removeChildFromIndex(index){
         this.impl(REMOVE_CHILD_INDEX, index);
     }
+    removeChildByReactId(reactId){
+         this.impl(REMOVE_CHILD, [reactId]);
+    }
     replaceAt(reactId){
         this.impl(REPLACE_AT, [reactId]);
     }
