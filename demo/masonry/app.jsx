@@ -1,4 +1,5 @@
-import React from 'ReactOverTheWire';
+import React from 'react';
+import NativeInvoker from '../nativeInvoker.jsx';
 
 const css = `
 .container {
@@ -21,12 +22,22 @@ function randInt(v) {
     return Math.floor(Math.random() * v);
 }
 
-const Masonry = props =>
-         (
-            <div {...props} ref={masonryRef => masonryRef.invoke('masonry', [props.columns])}>
-                {props.children}
+
+class Masonry extends NativeInvoker {
+    render() {
+        const {children, columns, ...domProps} = this.props;
+        return (
+            <div 
+                {...domProps} 
+                ref={masonryRef => {
+                    this.invoke(masonryRef, 'masonry', [columns])}
+                }
+            >
+                {children}
             </div>
-        );
+        )
+    }
+}
 
 const App = React.createClass({
     getInitialState: ()=> {
@@ -38,7 +49,7 @@ const App = React.createClass({
     },
     render: function () {
         return (
-            <div style="min-height:50px">
+            <div style={{minHeight: 50}}>
                 <style dangerouslySetInnerHTML={{__html:css}}/>
                 <Masonry columns={3} className="container">
                     {this.state.items.map((h, index) =>

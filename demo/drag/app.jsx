@@ -1,4 +1,4 @@
-import React from 'ReactOverTheWire';
+import React from 'react';
 
 const SIZE = 40;
 

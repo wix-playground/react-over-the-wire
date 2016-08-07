@@ -1,4 +1,4 @@
-import React from 'ReactOverTheWire';
+import React from 'react';
 var TodoItem = require('./todoItem.jsx');
 var TodoForm = require('./todoForm.jsx');
 var Clock = require('./clock.jsx');

@@ -35,7 +35,7 @@
             return query;
         }
         var query = parseQuery(window.location.search);
-        var availableTypes = ['server', 'channel'];
+        var availableTypes = ['server', 'channel', 'vanilla'];
         var availableDemos = ['dbmonster', 'drag','masonry','recursion', 'todo'];
         if (availableTypes.indexOf(query.type) === -1 || availableDemos.indexOf(query.demo) === -1) {
             window.location.search = "type=server&demo=todo";

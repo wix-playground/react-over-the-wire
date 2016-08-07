@@ -2,7 +2,7 @@
  * Created by avim on 6/27/16.
  */
 
-import {render} from 'ReactOverTheWireDOM';
+import {render} from 'react-dom';
 import nativeExtensions from './nativeExtensions';
 
 function renderServer(targetId) {

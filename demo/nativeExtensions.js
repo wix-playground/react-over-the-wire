@@ -1,7 +1,7 @@
 /**
  * Created by avim on 7/25/16.
  */
-import {render} from 'ReactOverTheWireDOM';
+import {render} from 'react-dom';
 
 const extensions = {
     masonry: (el, cols) => {

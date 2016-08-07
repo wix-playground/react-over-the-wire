@@ -2,8 +2,8 @@
  * Created by avim on 6/27/16.
  */
 
-import React from 'ReactOverTheWire';
-import ReactOverTheWireDOM from 'ReactOverTheWireDOM';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import recursion from './recursion/app.jsx';
 import dbmonster from './dbmonster/app.jsx';
 import drag from './drag/app.jsx';
@@ -35,7 +35,7 @@ function renderLocal(targetId) {
         React.createElement(demoApps[window.chosenDemo], {})
     , channelFacade(channel.port2, 'worker-side'));
 
-    ReactOverTheWireDOM.render(
+    ReactDOM.render(
         channelFacade(channel.port1, 'native-side'),
 
         // registering native extensions

@@ -2,8 +2,7 @@ var path = require('path');
 module.exports = {
     context: __dirname,
     entry: {
-        'server': './server.jsx',
-        'channel': './channel.jsx'
+        'vanilla': './vanilla.jsx'
     },
     output: {
         filename: '[name].js',
@@ -21,8 +20,6 @@ module.exports = {
     ],
     resolve: {
         alias: {
-            'react': path.resolve(__dirname, './../dist/ReactOverTheWire.js'),
-            'react-dom': path.resolve(__dirname, './../dist/ReactOverTheWireDOM.js')
         }
     },
 };

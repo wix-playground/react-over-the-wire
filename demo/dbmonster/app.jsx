@@ -1,4 +1,4 @@
-import React from 'ReactOverTheWire';
+import React from 'react';
 import getData from './data';
 
 class Query extends React.Component{
