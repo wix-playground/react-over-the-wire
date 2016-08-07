@@ -1,23 +1,30 @@
 import ReactBrowserEventEmitter from 'react/lib/ReactBrowserEventEmitter';
 import EventConstants from 'react/lib/EventConstants';
+import EventPluginHub from 'react/lib/EventPluginHub';
+import NodeIDOperations from './NodeIDOperations';
+
+const nodeKey = '$reactId$';
 
 export default class WorkerDomNodeImpl {
     constructor(reactId, el, options) {
         this.el = el;
         this.options = options;
-        this.reactId = reactId;
+        this._rootNodeID = reactId;
         if (el === '#text') {
             this.ref = document.createTextNode(options.value);
             this.type = 'TEXT_NODE';
         } else {
             this.ref = document.createElement(el);
-            this.ref.setAttribute('data-reactid', this.reactId);
+            this.ref.setAttribute('data-reactid', this._rootNodeID);
             this.setAttributes(this.options);
         }
-    }
+        this.ref[nodeKey] = reactId;
+        this._hostParent = null;
+   }
     addChild(node, afterNode) {
         this.ref.appendChild(node.ref);
-    }
+         node._hostParent = this;
+   }
     addChildAtIndex(node, index) {
         var nextNode = this.ref.childNodes[index];
         if (nextNode){
@@ -25,21 +32,26 @@ export default class WorkerDomNodeImpl {
         } else {
             this.ref.appendChild(node.ref);
         }
+        node._hostParent = this;
     }
     removeChild(node) {
         this.ref.removeChild(node.ref);
+        node._hostParent = null;
     }
     removeChildAtIndex(index) {
         var nodeToRemove = this.ref.childNodes[index];
         let reactId = null;
         if (nodeToRemove.nodeType !== Node.TEXT_NODE){
-            reactId = nodeToRemove.getAttribute('data-reactid');
+            reactId = nodeToRemove[nodeKey];
+            NodeIDOperations.get(reactId)._hostParent = null;
         }
         this.ref.removeChild(nodeToRemove);
         return reactId;
     }
     replace(oldNode) {
-        oldNode.ref.parentNode.replaceChild(this.ref, oldNode.ref);
+        var parentNode = oldNode.ref.parentNode;
+        parentNode.replaceChild(this.ref, oldNode.ref);
+        this._hostParent = NodeIDOperations.get(parentNode[nodeKey]);
     }
     setContent(content) {
         if (this.type === 'TEXT_NODE') {
@@ -64,15 +76,17 @@ export default class WorkerDomNodeImpl {
                     // TODO - Add more cases of events that do not bubble
                     // Look at trapBubbledEventsLocal in REactDomComponent in react-dom
             }
+            const reactId = this._rootNodeID;
             ReactBrowserEventEmitter.listenTo(handler, container);
-            ReactBrowserEventEmitter.putListener(this.reactId, handler, (syntheticEvent, reactId, e) => {
-                onEvent(handler, syntheticEvent, reactId, e);
+            EventPluginHub.putListener({_rootNodeID: this._rootNodeID, _hostNode: this.ref, ref:this.ref}, handler, (syntheticEvent) => {
+                debugger;
+                onEvent(handler, syntheticEvent, reactId);
             });
         });
     }
 
     removeEventHandlers() {
-        ReactBrowserEventEmitter.deleteAllListeners(this.reactId);
+        EventPluginHub.deleteAllListeners({_rootNodeID: this._rootNodeID, _hostNode: this.ref, ref:this.ref});
     }
 }
 

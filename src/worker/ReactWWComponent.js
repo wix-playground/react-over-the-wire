@@ -3,7 +3,72 @@ import ReactMultiChild from 'react/lib/ReactMultiChild';
 import WorkerDomNodeStub from './WorkerDomNodeStub';
 import ReactWWIDOperations from './ReactWWIDOperations';
 
-import EventConstants from 'react/lib/EventConstants';
+const eventsHandlers = {
+  onAbort: true,
+  onAnimationEnd: true,
+  onAnimationIteration: true,
+  onAnimationStart: true,
+  onBlur: true,
+  onCanPlay: true,
+  onCanPlayThrough: true,
+  onChange: true,
+  onClick: true,
+  onCompositionEnd: true,
+  onCompositionStart: true,
+  onCompositionUpdate: true,
+  onContextMenu: true,
+  onCopy: true,
+  onCut: true,
+  onDoubleClick: true,
+  onDrag: true,
+  onDragEnd: true,
+  onDragEnter: true,
+  onDragExit: true,
+  onDragLeave: true,
+  onDragOver: true,
+  onDragStart: true,
+  onDrop: true,
+  onDurationChange: true,
+  onEmptied: true,
+  onEncrypted: true,
+  onEnded: true,
+  onError: true,
+  onFocus: true,
+  onInput: true,
+  onKeyDown: true,
+  onKeyPress: true,
+  onKeyUp: true,
+  onLoadedData: true,
+  onLoadedMetadata: true,
+  onLoadStart: true,
+  onMouseDown: true,
+  onMouseMove: true,
+  onMouseOut: true,
+  onMouseOver: true,
+  onMouseUp: true,
+  onPaste: true,
+  onPause: true,
+  onPlay: true,
+  onPlaying: true,
+  onProgress: true,
+  onRateChange: true,
+  onScroll: true,
+  onSeeked: true,
+  onSeeking: true,
+  onSelectionChange: true,
+  onStalled: true,
+  onSuspend: true,
+  onTextInput: true,
+  onTimeUpdate: true,
+  onTouchCancel: true,
+  onTouchEnd: true,
+  onTouchMove: true,
+  onTouchStart: true,
+  onTransitionEnd: true,
+  onVolumeChange: true,
+  onWaiting: true,
+  onWheel: true
+}
 
 let guid = 1;
 
@@ -21,7 +86,7 @@ function extractEventHandlers(props) {
         options: {}
     };
     for (let key in props) {
-        if (EventConstants.hasOwnProperty(key)) {
+        if (eventsHandlers.hasOwnProperty(key)) {
             result.eventHandlers[key] = props[key];
         } else {
             result.options[key] = props[key];

@@ -9,7 +9,11 @@ import ReactEventListener from 'react/lib/ReactEventListener';
 import ReactReconcileTransaction from 'react/lib/ReactReconcileTransaction';
 import ReactDefaultBatchingStrategy from 'react/lib/ReactDefaultBatchingStrategy';
 import ReactInstanceHandles from 'react/lib/ReactInstanceHandles';
-import ReactMount from 'react/lib/ReactMount';
+
+import patchedReactDOMComponentTree from './patchedReactDOMComponentTree';
+import ReactDOMComponentTree from 'react/lib/ReactDOMComponentTree';
+import ReactDOMTreeTraversal from 'react/lib/ReactDOMTreeTraversal';
+Object.assign(ReactDOMComponentTree, patchedReactDOMComponentTree);
 
 var alreadyInjected = false;
 
@@ -26,10 +30,13 @@ export default function inject() {
     ReactInjection.EventEmitter.injectReactEventListener(
         ReactEventListener
     );
-
     ReactInjection.EventPluginHub.injectEventPluginOrder(DefaultEventPluginOrder);
-    ReactInjection.EventPluginHub.injectInstanceHandle(ReactInstanceHandles);
-    ReactInjection.EventPluginHub.injectMount(ReactMount);
+    ReactInjection.EventPluginUtils.injectComponentTree(patchedReactDOMComponentTree);
+    ReactInjection.EventPluginUtils.injectTreeTraversal(ReactDOMTreeTraversal);
+
+
+    // ReactInjection.EventPluginHub.injectInstanceHandle(ReactInstanceHandles);
+    // ReactInjection.EventPluginHub.injectMount(ReactMount);
 
 
     ReactInjection.EventPluginHub.injectEventPluginsByName({

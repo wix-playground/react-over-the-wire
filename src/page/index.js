@@ -1,15 +1,14 @@
 import WorkerDomNodeImpl from './WorkerDomNodeImpl';
 import Channel from './../common/channel';
 import { EVENT, RENDER_TIME, ADD_EVENT_HANDLERS, ADD_CHILD_INDEX, REMOVE_CHILD_INDEX, REMOVE_CHILD, REPLACE_AT, REMOVE_EVENT_HANDLERS, RENDER_QUEUE, CONSTRUCTOR, ADD_CHILD, RENDER, SET_ATTRIBUTES, SET_CONTENT, INVOKE } from './../common/constants';
-import ReactMount from 'react/lib/ReactMount';
 
-import {inject} from 'react/lib/ReactDefaultInjection';
+import inject from './inject';
 import NodeIDOps from './NodeIDOperations';
+
 
 class ReactWorkerDom {
     constructor(worker, container, nativeHandlers) {
         inject();
-
         this.container = container;
 
         this.channel = new Channel(worker);
@@ -67,7 +66,7 @@ class ReactWorkerDom {
             case REPLACE_AT:
                 let oldNode = NodeIDOps.get(data.args[0]);
                 node.replace(oldNode);
-                NodeIDOps.remove(oldNode.reactId);
+                NodeIDOps.remove(oldNode._rootNodeID);
                 break;
             case SET_ATTRIBUTES:
                 node.setAttributes(...data.args);
