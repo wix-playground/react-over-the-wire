@@ -40,11 +40,8 @@ export default class WorkerDomNodeImpl {
     }
     removeChildAtIndex(index) {
         var nodeToRemove = this.ref.childNodes[index];
-        let reactId = null;
-        if (nodeToRemove.nodeType !== Node.TEXT_NODE){
-            reactId = nodeToRemove[nodeKey];
-            NodeIDOperations.get(reactId)._hostParent = null;
-        }
+        let reactId = nodeToRemove[nodeKey];
+        NodeIDOperations.get(reactId)._hostParent = null;
         this.ref.removeChild(nodeToRemove);
         return reactId;
     }
@@ -79,7 +76,6 @@ export default class WorkerDomNodeImpl {
             const reactId = this._rootNodeID;
             ReactBrowserEventEmitter.listenTo(handler, container);
             EventPluginHub.putListener({_rootNodeID: this._rootNodeID, _hostNode: this.ref, ref:this.ref}, handler, (syntheticEvent) => {
-                debugger;
                 onEvent(handler, syntheticEvent, reactId);
             });
         });
