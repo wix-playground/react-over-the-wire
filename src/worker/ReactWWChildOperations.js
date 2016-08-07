@@ -29,7 +29,7 @@ export const actions = {
     }, [REMOVE_NODE](inst, update) {
         // FIXME - Since this is async, if more than one node from the same parent 
         // Node is to be removed, this causes an error
-        const parent = ReactWWIDOperations.getParent(inst._rootNodeID);
+        const parent = ReactWWIDOperations.get(inst._rootNodeID);
         parent.removeChildFromIndex(update.fromIndex);
     }
 };
