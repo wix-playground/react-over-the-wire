@@ -11,8 +11,7 @@
   },
   "author": "Parashuram <code@nparashuram.com>",
   "license": "BSD-3-Clause",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
